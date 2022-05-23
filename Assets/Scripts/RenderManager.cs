@@ -1,18 +1,24 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class RenderManager : MonoBehaviour
-{
-    // Start is called before the first frame update
-    void Start()
-    {
-        
+public class RenderManager : MonoBehaviour {
+    [SerializeField]
+    private FloorsDataSO dataSo;
+
+    [SerializeField]
+    private NodObject nodPrefab;
+    
+    [SerializeField]
+    private Transform nodsContainer;
+    
+    private void Start() {
+        DrawNods();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+    private void DrawNods() {
+        foreach (Nod nod in dataSo.Nods) {
+            NodObject nodObj =  Instantiate(nodPrefab, nod.coordinates, Quaternion.identity, nodsContainer);
+            nodObj.SetState(nod.type);
+        }
     }
+    
 }
