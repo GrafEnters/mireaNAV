@@ -461,6 +461,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _renderManager: {fileID: 226110219}
+  dataSo: {fileID: 11400000, guid: 76222903466af0240bd80796a303c139, type: 2}
 --- !u!4 &867090615
 Transform:
   m_ObjectHideFlags: 0

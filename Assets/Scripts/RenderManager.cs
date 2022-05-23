@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -13,27 +14,45 @@ public class RenderManager : MonoBehaviour {
     private Transform nodsContainer;
 
     private NodObject start, finish;
-
-    public bool TryGetPoints(out Vector3 _start, out Vector3 _finish) {
+    private Dictionary<Nod, NodObject> _nodObjects;
+    private bool isPathSelected;
+    public bool TryGetPoints(out Nod _start, out Nod _finish) {
         if (start == null || finish == null) {
-            _start = Vector3.zero;
-            _finish = Vector3.zero;
+            _start = null;
+            _finish = null;
             return false;
         }
 
-        _start = start.transform.position;
-        _finish = finish.transform.position;
+        _start = start.nod;
+        _finish = finish.nod;
         return true;
     }
 
+    public void SelectPath( List<Nod> path) {
+        foreach (Nod nod in path) {
+            _nodObjects[nod].SetState(States.Path);
+        }
+
+        isPathSelected = true;
+    }
+
+    private void RevertAllNods() {
+        foreach (NodObject nodObj in _nodObjects.Values) {
+            nodObj.RevertToNormal();
+        } 
+        isPathSelected = false;
+    }
+    
     private void Start() {
         DrawNods();
     }
 
     private void DrawNods() {
+        _nodObjects = new();
         foreach (Nod nod in dataSo.Nods) {
             NodObject nodObj = Instantiate(nodPrefab, nod.coordinates, Quaternion.identity, nodsContainer);
-            nodObj.Init(nod.type);
+            nodObj.Init(nod);
+            _nodObjects.Add(nod,nodObj);
         }
     }
 
@@ -62,6 +81,9 @@ public class RenderManager : MonoBehaviour {
             Debug.Log("Choose different nods!");
             return;
         }
+        if (isPathSelected) {
+            RevertAllNods();
+        }
 
         if (start != null) {
             start.RevertToNormal();
@@ -85,6 +107,10 @@ public class RenderManager : MonoBehaviour {
         if (obj == start) {
             Debug.Log("Choose different nods!");
             return;
+        }
+
+        if (isPathSelected) {
+            RevertAllNods();
         }
 
         if (finish != null) {

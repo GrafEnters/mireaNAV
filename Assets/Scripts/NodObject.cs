@@ -8,9 +8,10 @@ public class NodObject : MonoBehaviour {
 
     private Color normalColor;
     public States curState;
-
-    public void Init(int stateIndex) {
-        SetState(stateIndex);
+    public Nod nod;
+    public void Init(Nod myNod) {
+        nod = myNod;
+        SetState(nod.type);
         normalColor = _meshRenderer.material.color;
     }
 

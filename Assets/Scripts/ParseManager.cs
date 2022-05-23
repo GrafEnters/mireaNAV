@@ -24,9 +24,10 @@ public class ParseManager : MonoBehaviour {
             floors[i] = ParseFloor(textData);
         }
 
-        Dictionary<Vector3, Nod> nods = ConvertToNods(floors);
+        Dictionary<Vector3Int, Nod> nods = ConvertToNods(floors);
         ConnectNods(nods);
 
+        dataSo.NodsVectors = new List<Vector3Int>(nods.Keys);;
         dataSo.Nods = new List<Nod>(nods.Values);
 
         Debug.Log($"Parsed Successful. Total Nods count: {dataSo.Nods.Count}.");
@@ -44,12 +45,12 @@ public class ParseManager : MonoBehaviour {
         return res;
     }
 
-    private static Dictionary<Vector3, Nod> ConvertToNods(int[][,] floorsData) {
+    private static Dictionary<Vector3Int, Nod> ConvertToNods(int[][,] floorsData) {
         int x = floorsData[0].GetLength(0);
         int z = floorsData[0].GetLength(1);
         int y = floorsData.Length;
 
-        Dictionary<Vector3, Nod> nodsMap = new();
+        Dictionary<Vector3Int, Nod> nodsMap = new();
 
         for (int yy = 0; yy < y; yy++) {
             for (int xx = 0; xx < x; xx++) {
@@ -59,7 +60,7 @@ public class ParseManager : MonoBehaviour {
                         coordinates = new Vector3Int(xx, yy, zz),
                         Neighbours = new List<Vector3Int>()
                     };
-                    nodsMap.Add(new Vector3(xx, yy, zz), nod);
+                    nodsMap.Add(new Vector3Int(xx, yy, zz), nod);
                 }
             }
         }
@@ -67,7 +68,7 @@ public class ParseManager : MonoBehaviour {
         return nodsMap;
     }
 
-    private static void ConnectNods(Dictionary<Vector3, Nod> nods) {
+    private static void ConnectNods(Dictionary<Vector3Int, Nod> nods) {
         foreach (Nod nod in nods.Values) {
             TryConnectNode(nod, nods, Vector3Int.back);
             TryConnectNode(nod, nods, Vector3Int.forward);
@@ -78,13 +79,13 @@ public class ParseManager : MonoBehaviour {
         }
     }
 
-    private static void TryConnectNode(Nod nod, Dictionary<Vector3, Nod> nods, Vector3Int shift) {
+    private static void TryConnectNode(Nod nod, Dictionary<Vector3Int, Nod> nods, Vector3Int shift) {
         if (nods.ContainsKey(nod.coordinates + shift)) {
             nod.Neighbours.Add(nod.coordinates + shift);
         }
     }
 
-    private static void TryConnectStairsNode(Nod nod, Dictionary<Vector3, Nod> nods, Vector3Int shift) {
+    private static void TryConnectStairsNode(Nod nod, Dictionary<Vector3Int, Nod> nods, Vector3Int shift) {
         if (nods.ContainsKey(nod.coordinates + shift)) {
             if (nods[nod.coordinates + shift].type == stairsKey) {
                 nod.Neighbours.Add(nod.coordinates + shift);
