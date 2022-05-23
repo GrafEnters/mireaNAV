@@ -28,8 +28,10 @@ public class RenderManager : MonoBehaviour {
         return true;
     }
 
-    public void SelectPath( List<Nod> path) {
+    public void SelectPath( Stack<Nod> path) {
+        RevertAllNods();
         foreach (Nod nod in path) {
+            
             _nodObjects[nod].SetState(States.Path);
         }
 

@@ -8,6 +8,7 @@ public class ParseManager : MonoBehaviour {
     private const string genericFloorPath = "Assets/Data/Floor{0}.txt";
     private const int floorsCount = 3;
     private const int stairsKey = 2;
+    private const int wallKey = 1;
 
     [MenuItem("MireaNAV/ParseFloors")]
     public static void ParseFloors() {
@@ -70,6 +71,9 @@ public class ParseManager : MonoBehaviour {
 
     private static void ConnectNods(Dictionary<Vector3Int, Nod> nods) {
         foreach (Nod nod in nods.Values) {
+            if (nod.type == wallKey) {
+                continue;
+            }
             TryConnectNode(nod, nods, Vector3Int.back);
             TryConnectNode(nod, nods, Vector3Int.forward);
             TryConnectNode(nod, nods, Vector3Int.right);
@@ -81,6 +85,9 @@ public class ParseManager : MonoBehaviour {
 
     private static void TryConnectNode(Nod nod, Dictionary<Vector3Int, Nod> nods, Vector3Int shift) {
         if (nods.ContainsKey(nod.coordinates + shift)) {
+            if (nods[nod.coordinates + shift].type == wallKey) {
+               return;
+            }
             nod.Neighbours.Add(nod.coordinates + shift);
         }
     }
