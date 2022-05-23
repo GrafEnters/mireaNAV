@@ -6,6 +6,9 @@ public class NodObject : MonoBehaviour {
     [SerializeField]
     private MeshRenderer _meshRenderer;
 
+    [SerializeField]
+    private Transform _line;
+    
     private Color normalColor;
     public States curState;
     public Nod nod;
@@ -18,6 +21,7 @@ public class NodObject : MonoBehaviour {
     public void RevertToNormal() {
         _meshRenderer.enabled = true;
         _meshRenderer.material.color = normalColor;
+        _line.gameObject.SetActive(false);
     }
 
     public void SetState(States state) {
@@ -45,6 +49,11 @@ public class NodObject : MonoBehaviour {
                 _meshRenderer.material.color = Color.red;
                 break;
         }
+    }
+
+    public void SetLine(Nod next) {
+        _line.gameObject.SetActive(true);
+        _line.transform.rotation = Quaternion.LookRotation(next.coordinates - transform.position);
     }
     
     public void SetState(int stateIndex) {

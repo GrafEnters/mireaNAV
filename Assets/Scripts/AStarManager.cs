@@ -9,18 +9,15 @@ public class AStarManager : MonoBehaviour {
         return null;
     }
 
-    public static Stack<Nod> FindPathByDeepSearch(List<Nod> nods,Dictionary<Vector3Int, Nod> NodsMap, Nod start, Nod finish) {
-        
+    public static Stack<Nod> FindPathByDeepSearch(List<Nod> nods, Dictionary<Vector3Int, Nod> NodsMap, Nod start,
+        Nod finish) {
         List<Nod> visited = new();
-        Stack<Nod> frontier = new();
         Stack<Nod> path = new();
-        frontier.Push(start);
-        path.Push(start);
-        
+
         bool RecursivePushNod(Nod next) {
             path.Push(next);
             visited.Add(next);
-            if(next == finish) {
+            if (next == finish) {
                 return true;
             }
 
@@ -31,12 +28,11 @@ public class AStarManager : MonoBehaviour {
                         return true;
                     }
             }
-            
-            
+
             path.Pop();
             return false;
         }
-        
+
         if (RecursivePushNod(start)) {
             Debug.Log("Path successfully found");
         } else {
@@ -44,31 +40,5 @@ public class AStarManager : MonoBehaviour {
         }
 
         return path;
-        /*while (frontier.Count > 0)
-        {
-           
-            Nod current = frontier.Pop();
-        visited.Add(current);
-           
-        if (current == finish) {
-            Debug.Log("Path successfully found");
-            return visited;
-        }
-
-        var neighbours = current.Neighbours;
-        foreach(var neighbour in neighbours)
-            if (!visited.Contains(NodsMap[neighbour]))
-                frontier.Push(NodsMap[neighbour]);
-        
-        foreach(var neighbour in neighbours) {
-            if (!visited.Contains(NodsMap[neighbour]))
-                frontier.Push(NodsMap[neighbour]);
-        }
-        }*/
-
-      
-        
-        Debug.Log("Couldnt find path :(");
-        return null;
     }
 }

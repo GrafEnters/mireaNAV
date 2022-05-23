@@ -30,11 +30,14 @@ public class RenderManager : MonoBehaviour {
 
     public void SelectPath( Stack<Nod> path) {
         RevertAllNods();
+        Nod previousNod = null;
         foreach (Nod nod in path) {
-            
             _nodObjects[nod].SetState(States.Path);
+            if (previousNod != null) {
+                _nodObjects[nod].SetLine(previousNod);
+            }
+            previousNod = nod;
         }
-
         isPathSelected = true;
     }
 
