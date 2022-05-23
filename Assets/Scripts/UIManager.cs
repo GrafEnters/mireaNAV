@@ -50,6 +50,7 @@ public class UIManager : MonoBehaviour {
                     break;
             }
             _renderManager.SelectPath(path);
+            Debug.Log($"Path found in {AStarManager.checkCount} checks!");
         } else {
             Debug.Log("Choose start & finish points!");
         }

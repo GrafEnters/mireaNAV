@@ -4,14 +4,18 @@ using UnityEngine;
 using Random = UnityEngine.Random;
 
 public class AStarManager : MonoBehaviour {
+    public static int checkCount = 0;
+
     public static Stack<Nod> FindPathByAStar(Dictionary<Vector3Int, Nod> NodsMap, Nod start,
         Nod finish) {
+        checkCount = 0;
         List<Nod> visited = new();
         Queue<Nod> frontier = new();
         start.previous = null;
         frontier.Enqueue(start);
 
         while (frontier.Count > 0) {
+            checkCount++;
             Nod current = frontier.Dequeue();
             visited.Add(current);
 
@@ -39,12 +43,14 @@ public class AStarManager : MonoBehaviour {
 
     public static Stack<Nod> FindPathByWidthSearch(Dictionary<Vector3Int, Nod> NodsMap, Nod start,
         Nod finish) {
+        checkCount = 0;
         List<Nod> visited = new();
         Queue<Nod> frontier = new();
         start.previous = null;
         frontier.Enqueue(start);
 
         while (frontier.Count > 0) {
+            checkCount++;
             Nod current = frontier.Dequeue();
             visited.Add(current);
 
@@ -63,23 +69,16 @@ public class AStarManager : MonoBehaviour {
         return default;
     }
 
-    private static Stack<Nod> GetPathBack(Nod finish, Stack<Nod> curPath) {
-        curPath.Push(finish);
-        if (finish.previous != null) {
-            return GetPathBack(finish.previous, curPath);
-        }
-
-        return curPath;
-    }
-
     public static Stack<Nod> FindPathByDeepSearch(Dictionary<Vector3Int, Nod> NodsMap, Nod start,
         Nod finish) {
+        checkCount = 0;
         List<Nod> visited = new();
         Stack<Nod> frontier = new();
         frontier.Push(start);
         start.previous = null;
 
         while (frontier.Count > 0) {
+            checkCount++;
             var current = frontier.Pop();
             visited.Add(current);
 
@@ -96,5 +95,14 @@ public class AStarManager : MonoBehaviour {
         }
 
         return default;
+    }
+
+    private static Stack<Nod> GetPathBack(Nod finish, Stack<Nod> curPath) {
+        curPath.Push(finish);
+        if (finish.previous != null) {
+            return GetPathBack(finish.previous, curPath);
+        }
+
+        return curPath;
     }
 }
