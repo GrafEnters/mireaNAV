@@ -1,32 +1,32 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
 public class AStarManager : MonoBehaviour {
-    public static Stack<Nod> FindPathByAStar(List<Nod> nods,Dictionary<Vector3Int, Nod> NodsMap, Nod start, Nod finish) {
+    public static Stack<Nod> FindPathByAStar( Dictionary<Vector3Int, Nod> NodsMap, Nod start,
+        Nod finish) {
         Debug.Log("Path successfully found");
         return null;
     }
-    
-    public static Stack<Nod> FindPathByWidthSearch(List<Nod> nods,Dictionary<Vector3Int, Nod> NodsMap, Nod start, Nod finish) {
-        List<Nod> visited = new List<Nod>();
-        Queue<Nod> frontier = new Queue<Nod>();
+
+    public static Stack<Nod> FindPathByWidthSearch( Dictionary<Vector3Int, Nod> NodsMap, Nod start,
+        Nod finish) {
+        List<Nod> visited = new();
+        Queue<Nod> frontier = new();
         start.previous = null;
         frontier.Enqueue(start);
-            
-        while (frontier.Count > 0)
-        {
+
+        while (frontier.Count > 0) {
             Nod current = frontier.Dequeue();
             visited.Add(current);
-                
+
             if (current == finish)
                 return GetPathBack(current, new Stack<Nod>());
 
-            var neighbours = current.Neighbours;
-            foreach(var neighbour in neighbours)
+            List<Vector3Int> neighbours = current.Neighbours;
+            neighbours = neighbours.OrderBy(a => Random.Range(0, 1f)).ToList();
+            foreach (var neighbour in neighbours)
                 if (!visited.Contains(NodsMap[neighbour])) {
                     frontier.Enqueue(NodsMap[neighbour]);
                     NodsMap[neighbour].previous = current;
@@ -36,44 +36,38 @@ public class AStarManager : MonoBehaviour {
         return default;
     }
 
-    private static Stack<Nod> GetPathBack(Nod finish,Stack<Nod> curPath ) {
+    private static Stack<Nod> GetPathBack(Nod finish, Stack<Nod> curPath) {
         curPath.Push(finish);
         if (finish.previous != null) {
             return GetPathBack(finish.previous, curPath);
-        } 
+        }
+
         return curPath;
     }
 
-    public static Stack<Nod> FindPathByDeepSearch(List<Nod> nods, Dictionary<Vector3Int, Nod> NodsMap, Nod start,
+    public static Stack<Nod> FindPathByDeepSearch( Dictionary<Vector3Int, Nod> NodsMap, Nod start,
         Nod finish) {
         List<Nod> visited = new();
-        Stack<Nod> path = new();
+        Stack<Nod> frontier = new();
+        frontier.Push(start);
+        start.previous = null;
 
-        bool RecursivePushNod(Nod next) {
-            path.Push(next);
-            visited.Add(next);
-            if (next == finish) {
-                return true;
-            }
+        while (frontier.Count > 0) {
+            var current = frontier.Pop();
+            visited.Add(current);
 
-            next.Neighbours = next.Neighbours.OrderBy(a => Random.Range(0, 1f)).ToList();
-            foreach (var neighbour in next.Neighbours) {
-                if (!visited.Contains(NodsMap[neighbour]))
-                    if (RecursivePushNod(NodsMap[neighbour])) {
-                        return true;
-                    }
-            }
+            if (current == finish)
+                return GetPathBack(current, new Stack<Nod>());
 
-            path.Pop();
-            return false;
+            List<Vector3Int> neighbours = current.Neighbours;
+            neighbours = neighbours.OrderBy(a => Random.Range(0, 1f)).ToList();
+            foreach (Vector3Int neighbour in neighbours)
+                if (!visited.Contains(NodsMap[neighbour])) {
+                    frontier.Push(NodsMap[neighbour]);
+                    NodsMap[neighbour].previous = current;
+                }
         }
 
-        if (RecursivePushNod(start)) {
-            Debug.Log("Path successfully found");
-        } else {
-            Debug.Log("Couldnt find path :(");
-        }
-
-        return path;
+        return default;
     }
 }

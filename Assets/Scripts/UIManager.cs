@@ -21,11 +21,12 @@ public class UIManager : MonoBehaviour {
     }
 
     private void FillDropdown() {
-        List<string> options = new();
- 
-        options.Add(Algorithm.DeepSearch.ToString());
-        options.Add(Algorithm.WidthSearch.ToString());
-        options.Add(Algorithm.AStar.ToString());
+        List<string> options = new() {
+            Algorithm.DeepSearch.ToString(),
+            Algorithm.WidthSearch.ToString(),
+            Algorithm.AStar.ToString()
+        };
+
         algoritmDropdown.ClearOptions();
         algoritmDropdown.AddOptions(options);
     }
@@ -36,16 +37,16 @@ public class UIManager : MonoBehaviour {
 
     public void FindPath() {
         if (_renderManager.TryGetPoints(out Nod start, out Nod finish)) {
-            Stack<Nod> path = AStarManager.FindPathByDeepSearch(dataSo.Nods,dataSo.GetNodsMap(), start, finish);
+            Stack<Nod> path = null;
             switch (_curAlgorithm) {
                 case Algorithm.DeepSearch:
-                    path = AStarManager.FindPathByDeepSearch(dataSo.Nods,dataSo.GetNodsMap(), start, finish);
+                    path = AStarManager.FindPathByDeepSearch(dataSo.GetNodsMap(), start, finish);
                     break;
                 case Algorithm.WidthSearch:
-                    path = AStarManager.FindPathByWidthSearch(dataSo.Nods,dataSo.GetNodsMap(), start, finish);
+                    path = AStarManager.FindPathByWidthSearch(dataSo.GetNodsMap(), start, finish);
                     break;
                 case Algorithm.AStar:
-                    path = AStarManager.FindPathByAStar(dataSo.Nods,dataSo.GetNodsMap(), start, finish);
+                    path = AStarManager.FindPathByAStar(dataSo.GetNodsMap(), start, finish);
                     break;
             }
             _renderManager.SelectPath(path);
