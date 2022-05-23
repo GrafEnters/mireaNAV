@@ -2,18 +2,18 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class FloorsDataSO : ScriptableObject {
-    [SerializeField]
-    public List<Nod> nods;
+    public List<Nod> Nods;
 
     public FloorsDataSO() {
-        nods = new List<Nod>();
+        Nods = new List<Nod>();
     }
 }
 
 [System.Serializable]
 public class Nod {
     [SerializeField]
-    public List<Nod> Neighbours;
-    public Vector3 coordinates;
+    public List<Vector3Int> Neighbours;
+
+    public Vector3Int coordinates;
     public int type;
 }
