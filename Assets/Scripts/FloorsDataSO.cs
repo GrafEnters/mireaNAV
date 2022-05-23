@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -24,7 +25,8 @@ public class FloorsDataSO : ScriptableObject {
 public class Nod {
     [SerializeField]
     public List<Vector3Int> Neighbours;
-
+    [NonSerialized]
+    public Nod previous;
     public Vector3Int coordinates;
     public int type;
 }
