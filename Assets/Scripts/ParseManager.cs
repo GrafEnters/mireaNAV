@@ -20,7 +20,13 @@ public class ParseManager : MonoBehaviour {
             string[] textData = File.ReadAllLines(fullPath);
             floors[i] = ParseFloor(textData);
         }
+
+        List<Nod> nods = ConvertToNods(floors);
+        
+        
         // Наполни dataSO своими данными
+
+        dataSo.nods = nods;
 
         AssetDatabase.CreateAsset(dataSo, scriptableObjectPath);
         Debug.Log($"Parsed Successful. Total nods count: {dataSo.nods.Count}.");
@@ -37,5 +43,29 @@ public class ParseManager : MonoBehaviour {
 
         return res;
     }
+
+    private static List<Nod> ConvertToNods(int[][,] floorsData) {
+        int x = floorsData[0].GetLength(0);
+        int z = floorsData[0].GetLength(1);
+        int y = floorsData.Length;
+
+        List<Nod> nods = new();
+
+        for (int yy = 0; yy < y; yy++) {
+            for (int xx = 0; xx < x; xx++) {
+                for (int zz = 0; zz < z; zz++) {
+                    nods.Add(new Nod {
+                        type = floorsData[yy][xx, zz],
+                        coordinates = new Vector3(xx, yy, zz),
+                        Neighbours = new List<Nod>()
+                    });
+                }
+            }
+        }
+
+        return nods;
+    }
+    
+    
     
 }
