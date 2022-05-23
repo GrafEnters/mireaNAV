@@ -1,26 +1,33 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
 public class AStarManager : MonoBehaviour {
-    public static int checkCount = 0;
+    public static int CheckCount = 0;
+    public static double MillisecondsPast = 0;
+    
 
     public static Stack<Nod> FindPathByAStar(Dictionary<Vector3Int, Nod> NodsMap, Nod start,
         Nod finish) {
-        checkCount = 0;
+        CheckCount = 0;
+        MillisecondsPast = 0;
+        DateTime before = DateTime.Now;
         List<Nod> visited = new();
         Queue<Nod> frontier = new();
         start.previous = null;
         frontier.Enqueue(start);
 
         while (frontier.Count > 0) {
-            checkCount++;
+            CheckCount++;
             Nod current = frontier.Dequeue();
             visited.Add(current);
 
-            if (current == finish)
+            if (current == finish) {
+                MillisecondsPast = (DateTime.Now - before).TotalMilliseconds;
                 return GetPathBack(current, new Stack<Nod>());
+            }
 
             List<Nod> neighbours = new();
             foreach (var neighbour in current.Neighbours) {
@@ -37,25 +44,29 @@ public class AStarManager : MonoBehaviour {
                 neighbour.previous = current;
             }
         }
-
+        MillisecondsPast = (DateTime.Now - before).TotalMilliseconds;
         return default;
     }
 
     public static Stack<Nod> FindPathByWidthSearch(Dictionary<Vector3Int, Nod> NodsMap, Nod start,
         Nod finish) {
-        checkCount = 0;
+        CheckCount = 0;
+        MillisecondsPast = 0;
+        DateTime before = DateTime.Now;
         List<Nod> visited = new();
         Queue<Nod> frontier = new();
         start.previous = null;
         frontier.Enqueue(start);
 
         while (frontier.Count > 0) {
-            checkCount++;
+            CheckCount++;
             Nod current = frontier.Dequeue();
             visited.Add(current);
 
-            if (current == finish)
+            if (current == finish) {
+                MillisecondsPast = (DateTime.Now - before).TotalMilliseconds;
                 return GetPathBack(current, new Stack<Nod>());
+            }
 
             List<Vector3Int> neighbours = current.Neighbours;
             neighbours = neighbours.OrderBy(a => Random.Range(0, 1f)).ToList();
@@ -65,25 +76,29 @@ public class AStarManager : MonoBehaviour {
                     NodsMap[neighbour].previous = current;
                 }
         }
-
+        MillisecondsPast = (DateTime.Now - before).TotalMilliseconds;
         return default;
     }
 
     public static Stack<Nod> FindPathByDeepSearch(Dictionary<Vector3Int, Nod> NodsMap, Nod start,
         Nod finish) {
-        checkCount = 0;
+        CheckCount = 0;
+        MillisecondsPast = 0;
+        DateTime before = DateTime.Now;
         List<Nod> visited = new();
         Stack<Nod> frontier = new();
         frontier.Push(start);
         start.previous = null;
 
         while (frontier.Count > 0) {
-            checkCount++;
+            CheckCount++;
             var current = frontier.Pop();
             visited.Add(current);
 
-            if (current == finish)
+            if (current == finish) {
+                MillisecondsPast = (DateTime.Now - before).TotalMilliseconds;
                 return GetPathBack(current, new Stack<Nod>());
+            }
 
             List<Vector3Int> neighbours = current.Neighbours;
             neighbours = neighbours.OrderBy(a => Random.Range(0, 1f)).ToList();
@@ -93,7 +108,7 @@ public class AStarManager : MonoBehaviour {
                     NodsMap[neighbour].previous = current;
                 }
         }
-
+        MillisecondsPast = (DateTime.Now - before).TotalMilliseconds;
         return default;
     }
 

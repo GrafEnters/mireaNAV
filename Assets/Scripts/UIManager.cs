@@ -12,7 +12,7 @@ public class UIManager : MonoBehaviour {
 
     [SerializeField]
     private TMP_Dropdown algoritmDropdown;
-    
+
     private Algorithm _curAlgorithm;
 
     private void Awake() {
@@ -32,7 +32,7 @@ public class UIManager : MonoBehaviour {
     }
 
     public void SelectAlgorithm(int value) {
-        _curAlgorithm = (Algorithm)value;
+        _curAlgorithm = (Algorithm) value;
     }
 
     public void FindPath() {
@@ -42,15 +42,18 @@ public class UIManager : MonoBehaviour {
                 case Algorithm.DeepSearch:
                     path = AStarManager.FindPathByDeepSearch(dataSo.GetNodsMap(), start, finish);
                     break;
+
                 case Algorithm.WidthSearch:
                     path = AStarManager.FindPathByWidthSearch(dataSo.GetNodsMap(), start, finish);
                     break;
+
                 case Algorithm.AStar:
                     path = AStarManager.FindPathByAStar(dataSo.GetNodsMap(), start, finish);
                     break;
             }
+
             _renderManager.SelectPath(path);
-            Debug.Log($"Path found in {AStarManager.checkCount} checks!");
+            Debug.Log($"Path found in {AStarManager.CheckCount} checks and {AStarManager.MillisecondsPast} milliseconds!");
         } else {
             Debug.Log("Choose start & finish points!");
         }
@@ -60,6 +63,7 @@ public class UIManager : MonoBehaviour {
 public enum Algorithm {
     DeepSearch,
     WidthSearch,
+
     //IterativeSearch,
     AStar
 }
