@@ -1,7 +1,5 @@
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using UnityEngine;
 using UnityEditor;
 
@@ -37,7 +35,7 @@ public class ParseManager : MonoBehaviour {
         int[,] res = new int[lineLength, textData.Length];
         for (int i = 0; i < lineLength; i++) {
             for (int j = 0; j < textData.Length; j++) {
-                res[i, j] = textData[j][i];
+                res[i, j] = (int)char.GetNumericValue( textData[j][i]);
             }
         }
 
