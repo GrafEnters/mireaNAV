@@ -10,7 +10,12 @@ public class ParseManager : MonoBehaviour {
 
     [MenuItem("MireaNAV/ParseFloors")]
     public static void ParseFloors() {
-        FloorsDataSO dataSo = ScriptableObject.CreateInstance<FloorsDataSO>();
+        FloorsDataSO dataSo = AssetDatabase.LoadAssetAtPath<FloorsDataSO>(scriptableObjectPath);
+        if (dataSo == null) {
+            dataSo = ScriptableObject.CreateInstance<FloorsDataSO>();
+            AssetDatabase.CreateAsset(dataSo, scriptableObjectPath);
+        }
+       
 
         int[][,] floors = new int[floorsCount][,];
         for (int i = 0; i < floorsCount; i++) {
@@ -26,7 +31,6 @@ public class ParseManager : MonoBehaviour {
 
         dataSo.nods = nods;
 
-        AssetDatabase.CreateAsset(dataSo, scriptableObjectPath);
         Debug.Log($"Parsed Successful. Total nods count: {dataSo.nods.Count}.");
     }
 

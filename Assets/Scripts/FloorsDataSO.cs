@@ -11,7 +11,7 @@ public class FloorsDataSO : ScriptableObject {
 }
 
 [System.Serializable]
-public struct Nod {
+public class Nod {
     [SerializeField]
     public List<Nod> Neighbours;
     public Vector3 coordinates;
