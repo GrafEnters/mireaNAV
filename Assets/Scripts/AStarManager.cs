@@ -4,13 +4,40 @@ using UnityEngine;
 using Random = UnityEngine.Random;
 
 public class AStarManager : MonoBehaviour {
-    public static Stack<Nod> FindPathByAStar( Dictionary<Vector3Int, Nod> NodsMap, Nod start,
+    public static Stack<Nod> FindPathByAStar(Dictionary<Vector3Int, Nod> NodsMap, Nod start,
         Nod finish) {
-        Debug.Log("Path successfully found");
-        return null;
+        List<Nod> visited = new();
+        Queue<Nod> frontier = new();
+        start.previous = null;
+        frontier.Enqueue(start);
+
+        while (frontier.Count > 0) {
+            Nod current = frontier.Dequeue();
+            visited.Add(current);
+
+            if (current == finish)
+                return GetPathBack(current, new Stack<Nod>());
+
+            List<Nod> neighbours = new();
+            foreach (var neighbour in current.Neighbours) {
+                if (!visited.Contains(NodsMap[neighbour])) {
+                    neighbours.Add(NodsMap[neighbour]);
+                    NodsMap[neighbour].additionalValue =
+                        Vector3Int.Distance(NodsMap[neighbour].coordinates, finish.coordinates);
+                }
+            }
+
+            neighbours = neighbours.OrderBy(a => a.additionalValue).ToList();
+            foreach (var neighbour in neighbours) {
+                frontier.Enqueue(neighbour);
+                neighbour.previous = current;
+            }
+        }
+
+        return default;
     }
 
-    public static Stack<Nod> FindPathByWidthSearch( Dictionary<Vector3Int, Nod> NodsMap, Nod start,
+    public static Stack<Nod> FindPathByWidthSearch(Dictionary<Vector3Int, Nod> NodsMap, Nod start,
         Nod finish) {
         List<Nod> visited = new();
         Queue<Nod> frontier = new();
@@ -45,7 +72,7 @@ public class AStarManager : MonoBehaviour {
         return curPath;
     }
 
-    public static Stack<Nod> FindPathByDeepSearch( Dictionary<Vector3Int, Nod> NodsMap, Nod start,
+    public static Stack<Nod> FindPathByDeepSearch(Dictionary<Vector3Int, Nod> NodsMap, Nod start,
         Nod finish) {
         List<Nod> visited = new();
         Stack<Nod> frontier = new();

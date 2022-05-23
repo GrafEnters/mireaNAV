@@ -27,6 +27,8 @@ public class Nod {
     public List<Vector3Int> Neighbours;
     [NonSerialized]
     public Nod previous;
+    [NonSerialized]
+    public float additionalValue;
     public Vector3Int coordinates;
     public int type;
 }
