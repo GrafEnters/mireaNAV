@@ -14,10 +14,12 @@ public class UIManager : MonoBehaviour {
     private TMP_Dropdown algoritmDropdown;
 
     private Algorithm _curAlgorithm;
+    private AStarManager _aStarManager;
 
     private void Awake() {
         _curAlgorithm = Algorithm.DeepSearch;
         FillDropdown();
+        _aStarManager = new AStarManager(dataSo.GetNodsMap());
     }
 
     private void FillDropdown() {
@@ -38,32 +40,13 @@ public class UIManager : MonoBehaviour {
     public void FindPath() {
         if (_renderManager.TryGetPoints(out Nod start, out Nod finish)) {
             Stack<Nod> path = null;
-            switch (_curAlgorithm) {
-                case Algorithm.DeepSearch:
-                    path = AStarManager.FindPathByDeepSearch(dataSo.GetNodsMap(), start, finish);
-                    break;
-
-                case Algorithm.WidthSearch:
-                    path = AStarManager.FindPathByWidthSearch(dataSo.GetNodsMap(), start, finish);
-                    break;
-
-                case Algorithm.AStar:
-                    path = AStarManager.FindPathByAStar(dataSo.GetNodsMap(), start, finish);
-                    break;
-            }
+            path = _aStarManager.FindPath(_curAlgorithm, start, finish);
 
             _renderManager.SelectPath(path);
-            Debug.Log($"Path found in {AStarManager.CheckCount} checks and {AStarManager.MillisecondsPast} milliseconds!");
+            Debug.Log(
+                $"Path found in {_aStarManager.CheckCount} checks and {_aStarManager.MillisecondsPast} milliseconds!");
         } else {
             Debug.Log("Choose start & finish points!");
         }
     }
-}
-
-public enum Algorithm {
-    DeepSearch,
-    WidthSearch,
-
-    //IterativeSearch,
-    AStar
 }
