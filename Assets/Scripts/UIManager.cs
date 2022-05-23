@@ -1,7 +1,14 @@
 using UnityEngine;
 
 public class UIManager : MonoBehaviour {
+    [SerializeField]
+    private RenderManager _renderManager;
+
     public void FindPath() {
-        AStarManager.FindPath(new Nod(), new Nod());
+        if (_renderManager.TryGetPoints(out Vector3 start, out Vector3 finish)) {
+            AStarManager.FindPath(start, finish);
+        } else {
+            Debug.Log("Choose start & finish points!");
+        }
     }
 }

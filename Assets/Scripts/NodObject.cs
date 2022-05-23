@@ -6,9 +6,22 @@ public class NodObject : MonoBehaviour {
     [SerializeField]
     private MeshRenderer _meshRenderer;
 
-    public void SetState(int stateIndex) {
-        States state = (States) stateIndex;
+    private Color normalColor;
+    public States curState;
+
+    public void Init(int stateIndex) {
+        SetState(stateIndex);
+        normalColor = _meshRenderer.material.color;
+    }
+
+    public void RevertToNormal() {
+        _meshRenderer.enabled = true;
+        _meshRenderer.material.color = normalColor;
+    }
+
+    public void SetState(States state) {
         _meshRenderer.enabled = state != States.Invisible;
+        curState = state;
         switch (state) {
             case States.Empty:
                 _meshRenderer.material.color = Color.white;
@@ -27,9 +40,15 @@ public class NodObject : MonoBehaviour {
                 break;
 
             case States.Path:
+               
                 _meshRenderer.material.color = Color.red;
                 break;
         }
+    }
+    
+    public void SetState(int stateIndex) {
+        States state = (States) stateIndex;
+        SetState(state);
     }
 }
 
